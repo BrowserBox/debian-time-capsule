@@ -60,7 +60,6 @@ class LynxBrowser {
       playSound: true,
       focus: true,
       onOpen: () => {
-        // Ensure focus after centering with delay
         setTimeout(() => {
           this.focus();
         }, 50);

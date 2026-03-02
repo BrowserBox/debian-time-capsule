@@ -392,7 +392,6 @@ class NetscapeNavigator {
   }
 
   public newWindow(): void {
-    // Spawn a clone — just re-open this one for simulation
     this.open();
     this.setStatus('New window opened.');
   }

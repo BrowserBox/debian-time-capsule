@@ -20,7 +20,6 @@ export function getEngineUrl(target: string): string {
         return target;
     }
 
-    // Ensure we don't double wrap
     if (target.includes('archive.org/web/2d_')) return target;
 
     return `${ENGINE_BASE}${target}`;
