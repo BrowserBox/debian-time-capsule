@@ -1,4 +1,4 @@
-# 📟 Time Capsule
+# 📟 Debian Time Capsule
 
 ![Debian](https://img.shields.io/badge/Debian-A81D33?style=flat&logo=debian&logoColor=white)
 ![CDE](https://img.shields.io/badge/CDE-1990s-orange?style=flat)
