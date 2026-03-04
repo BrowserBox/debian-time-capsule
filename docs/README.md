@@ -2,10 +2,6 @@
 
 Welcome to the **Debian Time Capsule** documentation! Whether you're here to rediscover the magic of CDE or to help us build the next generation of nostalgia, you'll find everything you need below.
 
-<p align="center">
-  <img src="/public/images/Explore.png" alt="CDE Preview" width="600"/>
-</p>
-
 ---
 
 ## For Users

@@ -600,8 +600,6 @@ const WindowManager = (() => {
         if (isVisible) {
           el.setAttribute('data-was-opened', 'true');
           el.style.display = 'none';
-        } else {
-          el.removeAttribute('data-was-opened');
         }
       }
     });
