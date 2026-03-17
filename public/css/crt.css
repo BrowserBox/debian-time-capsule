@@ -12,28 +12,35 @@
 
 /* scanlines & mask */
 .crt-overlay::before {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
-              linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
   z-index: 2;
-  background-size: 100% 4px, 6px 100%;
+  background-size:
+    100% 4px,
+    6px 100%;
   animation: scanline-move 10s linear infinite;
 }
 
 @keyframes scanline-move {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 100%; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
 }
 
 /* vignette & screen curvature glow */
 .crt-overlay::after {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   top: 0;
@@ -64,9 +71,15 @@
 }
 
 @keyframes crt-flicker-anim {
-  0% { opacity: 0.01; }
-  50% { opacity: 0.015; }
-  100% { opacity: 0.01; }
+  0% {
+    opacity: 0.01;
+  }
+  50% {
+    opacity: 0.015;
+  }
+  100% {
+    opacity: 0.01;
+  }
 }
 
 /* Phosphor persistence effect (static/noise) */

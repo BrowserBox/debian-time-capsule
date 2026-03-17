@@ -23,8 +23,6 @@ export class NetscapeNavigatorEngine {
   }
 
   public isInternalPage(target: string): string | undefined {
-    return Object.keys(this.nsPages).find(
-      (k) => k === target || this.nsPages[k].url === target
-    );
+    return Object.keys(this.nsPages).find((k) => k === target || this.nsPages[k].url === target);
   }
 }

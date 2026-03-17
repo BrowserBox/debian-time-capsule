@@ -104,16 +104,22 @@ export class LabShellEngine {
       pwd: () => this.getCwd(),
       whoami: () => this.getUser(),
       hostname: () => 'debian',
-      uname: (a) => a.includes('-a') ? 'Linux debian 5.10.0-20-amd64 #1 SMP Debian x86_64 GNU/Linux' : 'Linux',
+      uname: (a) =>
+        a.includes('-a') ? 'Linux debian 5.10.0-20-amd64 #1 SMP Debian x86_64 GNU/Linux' : 'Linux',
       date: () => new Date().toString(),
       echo: (a) => a.join(' '),
       clear: () => '', // Handled by UI
       alias: (args) => {
         if (args.length === 0) {
-          return Object.entries(this.aliases).map(([k, v]) => `alias ${k}='${v}'`).join('\n');
+          return Object.entries(this.aliases)
+            .map(([k, v]) => `alias ${k}='${v}'`)
+            .join('\n');
         }
         const match = args.join(' ').match(/^(\w+)=['"]?(.+?)['"]?$/);
-        if (match) { this.aliases[match[1]] = match[2]; return ''; }
+        if (match) {
+          this.aliases[match[1]] = match[2];
+          return '';
+        }
         return 'alias: invalid format. Use: alias name=command';
       },
       unalias: (args) => {
@@ -123,19 +129,30 @@ export class LabShellEngine {
       },
       export: (args) => {
         if (args.length === 0) {
-          return Object.entries(this.variables).map(([k, v]) => `export ${k}="${v}"`).join('\n');
+          return Object.entries(this.variables)
+            .map(([k, v]) => `export ${k}="${v}"`)
+            .join('\n');
         }
         const match = args.join(' ').match(/^(\w+)=['"]?(.+?)['"]?$/);
-        if (match) { this.variables[match[1]] = match[2]; return ''; }
+        if (match) {
+          this.variables[match[1]] = match[2];
+          return '';
+        }
         return 'export: invalid format. Use: export VAR=value';
       },
-      env: () => Object.entries(this.variables).map(([k, v]) => `${k}=${v}`).join('\n'),
+      env: () =>
+        Object.entries(this.variables)
+          .map(([k, v]) => `${k}=${v}`)
+          .join('\n'),
       grep: (args) => {
         if (args.length < 2) return 'grep: missing operand';
         const pattern = args[0];
         const input = args.slice(1).join(' ');
         const regex = new RegExp(pattern, 'i');
-        return input.split('\n').filter((line) => regex.test(line)).join('\n');
+        return input
+          .split('\n')
+          .filter((line) => regex.test(line))
+          .join('\n');
       },
       head: (args) => {
         const n = args.includes('-n') ? parseInt(args[args.indexOf('-n') + 1] || '10') : 10;
@@ -205,18 +222,27 @@ export class LabShellEngine {
         const parts = resolved.split('/').filter(Boolean);
         const name = parts.pop()!;
         const parentPath = '/' + parts.join('/') + (parts.length > 0 ? '/' : '');
-        return await VFS.rm(parentPath, name) ? '' : `rm: cannot remove '${args[0]}': No such file or directory`;
+        return (await VFS.rm(parentPath, name))
+          ? ''
+          : `rm: cannot remove '${args[0]}': No such file or directory`;
       },
-      help: () => 'Available: ls, cd, pwd, cat, mkdir, touch, rm, echo, clear, whoami, hostname, uname, date, lynx, history, man, alias, export, grep, head, tail, wc. Features: Pipes, Variables, Wildcards.',
+      help: () =>
+        'Available: ls, cd, pwd, cat, mkdir, touch, rm, echo, clear, whoami, hostname, uname, date, lynx, history, man, alias, export, grep, head, tail, wc. Features: Pipes, Variables, Wildcards.',
       lynx: (args) => {
-        if ((window as any).Lynx) { (window as any).Lynx.open(); return args[0] ? `Lynx opened with: ${args[0]}` : 'Lynx opened'; }
+        if ((window as any).Lynx) {
+          (window as any).Lynx.open();
+          return args[0] ? `Lynx opened with: ${args[0]}` : 'Lynx opened';
+        }
         return 'lynx: command not found';
       },
       history: () => 'History feature (limited in Lab).',
       man: (args) => {
-        if ((window as any).ManViewer) { (window as any).ManViewer.open(args[0]); return args[0] ? `Opening man: ${args[0]}` : 'Opening man observer...'; }
+        if ((window as any).ManViewer) {
+          (window as any).ManViewer.open(args[0]);
+          return args[0] ? `Opening man: ${args[0]}` : 'Opening man observer...';
+        }
         return 'man: command not found';
-      }
+      },
     };
   }
 }

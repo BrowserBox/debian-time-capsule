@@ -1,7 +1,7 @@
 {
-  "name": "zany-zenith",
+  "name": "debian-time-capsule",
   "type": "module",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

@@ -18,7 +18,7 @@ class NetscapeNavigator {
   private history: HistoryManager<string>;
   private currentPage = 'whats-new';
   private isLoading = false;
-  
+
   private nsPages: Record<string, NSPage> = {};
   private engine!: NetscapeNavigatorEngine;
   private renderer!: NetscapeRenderer;
@@ -194,12 +194,20 @@ class NetscapeNavigator {
 
     if (url.includes('google.com') || url.includes('github.com')) {
       setTimeout(() => {
-        if (this.isLoading) this.renderer.setStatus('NOTICE: Site may block vintage view. Try a search term instead.');
+        if (this.isLoading)
+          this.renderer.setStatus(
+            'NOTICE: Site may block vintage view. Try a search term instead.'
+          );
       }, 1500);
     }
 
     if (this.elements.externalView) {
-      setTimeout(() => { if (this.isLoading) { this.renderer.setStatus('Connect: Contacting host...'); this.renderer.setProgress(30); } }, 400);
+      setTimeout(() => {
+        if (this.isLoading) {
+          this.renderer.setStatus('Connect: Contacting host...');
+          this.renderer.setProgress(30);
+        }
+      }, 400);
       setTimeout(() => {
         if (this.isLoading) {
           this.renderer.setStatus('Waiting for reply...');
@@ -217,7 +225,13 @@ class NetscapeNavigator {
       };
       this.elements.externalView.addEventListener('load', onIframeLoad);
 
-      setTimeout(() => { if (this.isLoading) { this.renderer.setStatus('Document: Done'); this.renderer.setProgress(100); this.stopLoading(); } }, 8000);
+      setTimeout(() => {
+        if (this.isLoading) {
+          this.renderer.setStatus('Document: Done');
+          this.renderer.setProgress(100);
+          this.stopLoading();
+        }
+      }, 8000);
     }
   }
 
@@ -257,7 +271,9 @@ class NetscapeNavigator {
 
   public savePage(): void {
     if (!this.elements.content) return;
-    const blob = new Blob([`<html><body>${this.elements.content.innerHTML}</body></html>`], { type: 'text/html' });
+    const blob = new Blob([`<html><body>${this.elements.content.innerHTML}</body></html>`], {
+      type: 'text/html',
+    });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `${this.currentPage}.html`;
@@ -269,19 +285,34 @@ class NetscapeNavigator {
     const term = window.prompt('Find in page:');
     if (!term || !this.elements.content) return;
     const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    this.elements.content.innerHTML = this.elements.content.innerHTML.replace(regex, '<mark style="background:#ffff00;color:#000">$1</mark>');
+    this.elements.content.innerHTML = this.elements.content.innerHTML.replace(
+      regex,
+      '<mark style="background:#ffff00;color:#000">$1</mark>'
+    );
     this.renderer.setStatus(`Found: "${term}"`);
   }
 
-  public openFile(): void { this.renderer.setStatus('Open File: not supported in this environment.'); }
-  public printPage(): void { window.print(); }
+  public openFile(): void {
+    this.renderer.setStatus('Open File: not supported in this environment.');
+  }
+  public printPage(): void {
+    window.print();
+  }
   public viewSource(): void {
     if (!this.elements.content) return;
     const w = window.open('', '_blank', 'width=600,height=400');
-    if (w) w.document.write(`<pre style="font:12px monospace;white-space:pre-wrap">${this.elements.content.innerHTML.replace(/</g, '&lt;')}</pre>`);
+    if (w)
+      w.document.write(
+        `<pre style="font:12px monospace;white-space:pre-wrap">${this.elements.content.innerHTML.replace(/</g, '&lt;')}</pre>`
+      );
   }
-  public newWindow(): void { this.open(); this.renderer.setStatus('New window opened.'); }
-  public loadImages(): void { this.renderer.setStatus('Images loaded.'); }
+  public newWindow(): void {
+    this.open();
+    this.renderer.setStatus('New window opened.');
+  }
+  public loadImages(): void {
+    this.renderer.setStatus('Images loaded.');
+  }
 
   public addBookmark(): void {
     const page = this.nsPages[this.currentPage];
@@ -327,7 +358,7 @@ class NetscapeNavigator {
     if (!menu) return;
 
     menu.querySelectorAll('.ns-history-item').forEach((el) => el.remove());
-    
+
     const sep = document.createElement('div');
     sep.className = 'ns-separator';
     menu.appendChild(sep);
@@ -342,7 +373,11 @@ class NetscapeNavigator {
       item.className = 'ns-item ns-history-item';
       const actualIndex = totalLength - 1 - idx;
       if (actualIndex === currentIndex) item.style.fontWeight = 'bold';
-      item.textContent = page ? page.title.replace(' - Netscape', '') : (key.length > 30 ? key.substring(0, 27) + '...' : key);
+      item.textContent = page
+        ? page.title.replace(' - Netscape', '')
+        : key.length > 30
+          ? key.substring(0, 27) + '...'
+          : key;
       item.onclick = () => {
         const histItem = this.history.jumpTo(actualIndex);
         if (histItem) this.renderPage(histItem, true);

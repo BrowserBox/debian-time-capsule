@@ -11,7 +11,7 @@ export class LabTutorialManager {
       currentLesson: this.lessonIndex,
       totalLessons: this.lessons.length,
       currentStep: this.stepIndex,
-      percentage: Math.round((this.lessonIndex / this.lessons.length) * 100)
+      percentage: Math.round((this.lessonIndex / this.lessons.length) * 100),
     };
   }
 

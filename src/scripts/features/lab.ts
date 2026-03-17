@@ -14,7 +14,7 @@ class TerminalLabManager {
   private ui!: LabTerminalUI;
   private shell!: LabShellEngine;
   private tutorial!: LabTutorialManager;
-  
+
   private state: LabState = {
     lessonIndex: 0,
     stepIndex: 0,
@@ -22,14 +22,16 @@ class TerminalLabManager {
     history: [],
     historyPos: -1,
     cwd: '/home/victxrlarixs/',
-    user: 'victxrlarixs'
+    user: 'victxrlarixs',
   };
 
   constructor() {
     this.tutorial = new LabTutorialManager((tutorialData as LabTutorialData).lessons);
     this.shell = new LabShellEngine(
       () => this.state.cwd,
-      (path) => { this.state.cwd = path; },
+      (path) => {
+        this.state.cwd = path;
+      },
       () => this.state.user
     );
   }
@@ -95,7 +97,9 @@ class TerminalLabManager {
     if (this.state.freeMode) return;
     const step = this.tutorial.currentStep();
     if (!step) return;
-    this.ui.print(`<span class="lab-dim">next --&gt;</span> <span class="lab-cmd">${this.ui.escHtml(step.command)}</span>`);
+    this.ui.print(
+      `<span class="lab-dim">next --&gt;</span> <span class="lab-cmd">${this.ui.escHtml(step.command)}</span>`
+    );
     this.updatePromptDisplay();
   }
 
@@ -117,7 +121,9 @@ class TerminalLabManager {
     const current = this.tutorial.getProgress().currentLesson + 1;
     this.ui.print('');
     this.ui.print('<span class="lab-header">-------------------------------------------</span>');
-    this.ui.print(`<span class="lab-header">LESSON ${current}: ${(lesson?.title || '').toUpperCase()}</span>`);
+    this.ui.print(
+      `<span class="lab-header">LESSON ${current}: ${(lesson?.title || '').toUpperCase()}</span>`
+    );
     this.ui.print('<span class="lab-header">-------------------------------------------</span>');
     this.ui.print('');
   }
@@ -127,7 +133,9 @@ class TerminalLabManager {
     this.ui.print('<span class="lab-header">+-------------------------------------------+</span>');
     this.ui.print('<span class="lab-header">|  ALL LESSONS COMPLETE                     |</span>');
     this.ui.print('<span class="lab-header">+-------------------------------------------+</span>');
-    this.ui.print('<span class="lab-dim">You have completed the Debian CDE Terminal Laboratory.</span>');
+    this.ui.print(
+      '<span class="lab-dim">You have completed the Debian CDE Terminal Laboratory.</span>'
+    );
     this.ui.print('<span class="lab-dim">Type "free" to switch to free exploration mode.</span>');
   }
 
@@ -141,7 +149,7 @@ class TerminalLabManager {
 
   private updatePromptDisplay(): void {
     const step = this.tutorial.currentStep();
-    const userPrefix = this.state.freeMode ? this.state.user : (step?.user || this.state.user);
+    const userPrefix = this.state.freeMode ? this.state.user : step?.user || this.state.user;
     const char = userPrefix === 'root' ? '#' : '$';
     this.ui.updatePrompt(`${userPrefix}@debian:${this.cwdShort()}${char}`);
   }
@@ -159,12 +167,22 @@ class TerminalLabManager {
     if (e.ctrlKey && e.key === 'c') {
       e.preventDefault();
       this.ui.setInputValue('');
-      this.ui.print(`<span class="lab-prompt-str">${this.state.user}@debian:~</span> ${this.ui.escHtml(input)}^C`);
+      this.ui.print(
+        `<span class="lab-prompt-str">${this.state.user}@debian:~</span> ${this.ui.escHtml(input)}^C`
+      );
       return;
     }
-    if (e.ctrlKey && e.key === 'l') { e.preventDefault(); this.ui.clear(); return; }
-    if (e.ctrlKey && e.key === 'u') { e.preventDefault(); this.ui.setInputValue(''); return; }
-    
+    if (e.ctrlKey && e.key === 'l') {
+      e.preventDefault();
+      this.ui.clear();
+      return;
+    }
+    if (e.ctrlKey && e.key === 'u') {
+      e.preventDefault();
+      this.ui.setInputValue('');
+      return;
+    }
+
     if (e.key === 'Enter') {
       const raw = input.trim();
       this.ui.setInputValue('');
@@ -180,7 +198,9 @@ class TerminalLabManager {
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       this.state.historyPos = Math.max(this.state.historyPos - 1, -1);
-      this.ui.setInputValue(this.state.historyPos >= 0 ? this.state.history[this.state.historyPos] : '');
+      this.ui.setInputValue(
+        this.state.historyPos >= 0 ? this.state.history[this.state.historyPos] : ''
+      );
     } else if (e.key === 'Tab') {
       e.preventDefault();
       this.handleTabCompletion();
@@ -193,9 +213,11 @@ class TerminalLabManager {
     const lastPart = parts[parts.length - 1];
 
     if (parts.length === 1) {
-      const matches = this.state.freeMode 
-        ? this.shell.getAvailableCommands().filter(c => c.startsWith(lastPart))
-        : (this.tutorial.currentStep()?.command.startsWith(lastPart) ? [this.tutorial.currentStep()?.command!] : []);
+      const matches = this.state.freeMode
+        ? this.shell.getAvailableCommands().filter((c) => c.startsWith(lastPart))
+        : this.tutorial.currentStep()?.command.startsWith(lastPart)
+          ? [this.tutorial.currentStep()?.command!]
+          : [];
 
       if (matches.length === 1) {
         this.ui.setInputValue(matches[0] + ' ');
@@ -206,7 +228,7 @@ class TerminalLabManager {
     } else {
       this.completeFilePath(lastPart, parts);
     }
-    
+
     // Maintain focus after completion
     requestAnimationFrame(() => this.ui.focus());
   }
@@ -220,7 +242,7 @@ class TerminalLabManager {
     if (matches.length === 1) {
       parts[parts.length - 1] = matches[0];
       const childNode = node.children[matches[0]];
-      parts[parts.length - 1] += (childNode && childNode.type === 'folder') ? '/' : ' ';
+      parts[parts.length - 1] += childNode && childNode.type === 'folder' ? '/' : ' ';
       this.ui.setInputValue(parts.join(' '));
     } else if (matches.length > 1) {
       this.ui.print(`<span class="lab-dim">${matches.join('  ')}</span>`);
@@ -232,20 +254,42 @@ class TerminalLabManager {
     if (!raw) return;
 
     const step = this.tutorial.currentStep();
-    const promptStr = this.state.freeMode ? `${this.state.user}@debian:~$` : (step?.user === 'root' ? 'root@debian:~#' : `${this.state.user}@debian:~$`);
+    const promptStr = this.state.freeMode
+      ? `${this.state.user}@debian:~$`
+      : step?.user === 'root'
+        ? 'root@debian:~#'
+        : `${this.state.user}@debian:~$`;
     this.ui.print(`<span class="lab-prompt-str">${promptStr}</span> ${this.ui.escHtml(raw)}`);
 
     // Meta commands
-    if (raw === 'hint') { this.showHint(); return; }
-    if (raw === 'skip') { this.advance(); return; }
-    if (raw === 'free') { this.toggleFreeMode(true); return; }
-    if (raw === 'tutorial') { this.toggleFreeMode(false); return; }
-    if (raw === 'clear') { this.ui.clear(); return; }
+    if (raw === 'hint') {
+      this.showHint();
+      return;
+    }
+    if (raw === 'skip') {
+      this.advance();
+      return;
+    }
+    if (raw === 'free') {
+      this.toggleFreeMode(true);
+      return;
+    }
+    if (raw === 'tutorial') {
+      this.toggleFreeMode(false);
+      return;
+    }
+    if (raw === 'clear') {
+      this.ui.clear();
+      return;
+    }
 
     if (this.state.freeMode) {
       try {
         const out = await this.shell.execute(raw);
-        if (out) out.split('\n').forEach(l => this.ui.print(`<span class="lab-output">${this.ui.escHtml(l)}</span>`));
+        if (out)
+          out
+            .split('\n')
+            .forEach((l) => this.ui.print(`<span class="lab-output">${this.ui.escHtml(l)}</span>`));
       } catch (e: any) {
         this.ui.print(`<span class="lab-error">${this.ui.escHtml(e.message)}</span>`);
         if ((window as any).AudioManager) (window as any).AudioManager.error();
@@ -264,13 +308,17 @@ class TerminalLabManager {
     const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
     if (normalize(raw) === normalize(step.command)) {
       if (step.output) {
-        step.output.split('\\n').forEach(l => this.ui.print(`<span class="lab-output">${this.ui.escHtml(l)}</span>`));
+        step.output
+          .split('\\n')
+          .forEach((l) => this.ui.print(`<span class="lab-output">${this.ui.escHtml(l)}</span>`));
       }
       if ((window as any).AudioManager) (window as any).AudioManager.success();
       this.ui.print('');
       this.advance();
     } else {
-      this.ui.print(`<span class="lab-error">error: expected -- ${this.ui.escHtml(step.command)}</span>`);
+      this.ui.print(
+        `<span class="lab-error">error: expected -- ${this.ui.escHtml(step.command)}</span>`
+      );
       this.ui.print('<span class="lab-dim">       type "hint" or "skip" to continue.</span>');
       if ((window as any).AudioManager) (window as any).AudioManager.error();
       this.ui.print('');
@@ -282,7 +330,9 @@ class TerminalLabManager {
     if (this.state.freeMode) return;
     const step = this.tutorial.currentStep();
     if (!step) return;
-    this.ui.print(`<span class="lab-hint">HINT: type --&gt; ${this.ui.escHtml(step.command)}</span>`);
+    this.ui.print(
+      `<span class="lab-hint">HINT: type --&gt; ${this.ui.escHtml(step.command)}</span>`
+    );
     this.ui.scrollBottom();
   }
 
@@ -295,9 +345,11 @@ class TerminalLabManager {
     const isFree = this.state.freeMode;
     const btn = document.getElementById('lab-btn-free');
     if (btn) btn.classList.toggle('lab-btn-active', isFree);
-    
+
     if (isFree) {
-      this.ui.setHint('[FREE MODE] Type any command. Type "tutorial" to return to guided mode or "help".');
+      this.ui.setHint(
+        '[FREE MODE] Type any command. Type "tutorial" to return to guided mode or "help".'
+      );
     } else {
       this.ui.setHint('Type the command shown below to proceed. Type "hint" or "skip" for help.');
       this.showCurrentPrompt();
