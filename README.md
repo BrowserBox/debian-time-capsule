@@ -42,6 +42,10 @@ And if you build something great, share it.
 Your theme can be exported as a link and anyone can load it instantly — same colors, same backdrop, same vibe.
 Post it in [GitHub Discussions](https://github.com/Victxrlarixs/debian-cde/discussions) and see what others are building.
 
+### Optional BrowserBox Mode
+
+If you serve the app with BrowserBox assets available at the same origin, append `?browserbox=1` to enable the BrowserBox-backed Netscape integration without changing the default standalone experience.
+
 ---
 
 ## Features
